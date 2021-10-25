@@ -11,7 +11,8 @@ from tests import unittestcore
 from google.cloud.bigquery import SchemaField
 import json
 import os
-
+from google.cloud import bigquery
+from google.cloud.bigquery import SchemaField
 
 class TestComplexStreamLoadJob(unittestcore.BaseUnitTest):
 
@@ -50,6 +51,14 @@ class TestComplexStreamLoadJob(unittestcore.BaseUnitTest):
         self.assertEqual(ret, 2, msg="Exit code is not 2!")  # expected exit code is 2 - serious problem
 
     def test_recharge_stream(self):
+
+        with open(os.environ["TARGET_CONFIG"]) as f:
+            target_config = json.load(f)
+
+        project_id = target_config['project_id']
+        dataset_id = target_config['dataset_id']
+        table_id = "recharge_charges"
+
         from target_bigquery import main
 
         self.set_cli_args(
@@ -64,6 +73,22 @@ class TestComplexStreamLoadJob(unittestcore.BaseUnitTest):
         ret = main()
         state = self.get_state()[-1]
         print(state)
+        bq_client = bigquery.Client()
+
+
+        table = bq_client.get_table(
+            f"{project_id}.{dataset_id}.{table_id}")
+
+        actual = table.schema[0]
+
+        desired = SchemaField(name="test_date_field",
+                    field_type="DATE",
+                    mode='NULLABLE',
+                    description=None,
+                    fields=(),
+                    policy_tags=None)
+
+        assert actual == desired
 
         self.assertEqual(ret, 0, msg="Exit code is not 0!")
 
