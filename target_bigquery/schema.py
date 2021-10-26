@@ -4,6 +4,9 @@ the purpose of this module is to convert JSON schema to BigQuery schema.
 
 from google.cloud.bigquery import SchemaField
 import re
+import singer
+
+logger = singer.get_logger()
 
 METADATA_FIELDS = {
     "_time_extracted": {"type": ["null", "string"], "format": "date-time", "bq_type": "timestamp"},
@@ -136,12 +139,15 @@ def prioritize_one_data_type_from_multiple_ones_in_any_of(field_property):
                            }
 
     any_of_data_types = {}
-
+    
+    logger.info("anyOf property: '%s'", field_property['anyOf'])
+    
     for i in range(0, len(field_property['anyOf'])):
         data_type = field_property['anyOf'][i]['type'][0]
 
         any_of_data_types.update({data_type: prioritization_dict[data_type]})
-
+        
+    logger.info("Output datatypes: '%s'", any_of_data_types)
     # return key with minimum value, which is the highest priority data type
     # https://stackoverflow.com/questions/268272/getting-key-with-maximum-value-in-dictionary
     return min(any_of_data_types, key=any_of_data_types.get)
