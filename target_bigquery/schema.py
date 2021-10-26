@@ -128,7 +128,7 @@ def prioritize_one_data_type_from_multiple_ones_in_any_of(field_property):
 
     OUTPUT of the function is one JSON data type with the top priority
     """
-
+    logger.info("Input field property: '%s'", field_property)
     prioritization_dict = {"string": 1,
                            "number": 2,
                            "integer": 3,
@@ -141,11 +141,15 @@ def prioritize_one_data_type_from_multiple_ones_in_any_of(field_property):
     any_of_data_types = {}
     
     logger.info("anyOf property: '%s'", field_property['anyOf'])
-    
-    for i in range(0, len(field_property['anyOf'])):
-        data_type = field_property['anyOf'][i]['type'][0]
-
+    if field_property['anyOf'] == []:
+        data_type = "string"
         any_of_data_types.update({data_type: prioritization_dict[data_type]})
+        logger.info("Empty field property anyOf changed to '%s'", any_of_data_types)
+    else:
+        for i in range(0, len(field_property['anyOf'])):
+            data_type = field_property['anyOf'][i]['type'][0]
+
+            any_of_data_types.update({data_type: prioritization_dict[data_type]})
         
     logger.info("Output datatypes: '%s'", any_of_data_types)
     # return key with minimum value, which is the highest priority data type
