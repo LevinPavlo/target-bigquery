@@ -135,7 +135,6 @@ def prioritize_one_data_type_from_multiple_ones_in_any_of(field_property):
                            "boolean": 4,
                            "object": 5,
                            "array": 6,
-                           "null": 7,
                            }
 
     any_of_data_types = {}
@@ -175,7 +174,6 @@ def convert_field_type(field_property):
                        "bq-geography": "GEOGRAPHY",
                        "bq-decimal": "DECIMAL",
                        "bq-bigdecimal": "BIGDECIMAL",
-                       "null": "STRING"
                        }
 
     if "anyOf" in field_property:
