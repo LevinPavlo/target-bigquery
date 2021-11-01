@@ -6,11 +6,14 @@ https://github.com/datamill-co/target-postgres/blob/master/target_postgres/json_
 from copy import deepcopy
 import decimal
 import json
+import singer
 import re
 
 from jsonschema import Draft4Validator
 from jsonschema.exceptions import SchemaError
 from target_bigquery.exceptions import JSONSchemaError
+
+logger = singer.get_logger()
 
 NULL = 'null'
 OBJECT = 'object'
@@ -100,6 +103,8 @@ def simple_type(schema):
 
 
 def _get_ref(schema, paths):
+    logger.info("'%s' schema in _get_ref method. Paths is '%s'", schema)
+    logger.info("paths is '%s'", paths)
     if not paths:
         return schema
 
