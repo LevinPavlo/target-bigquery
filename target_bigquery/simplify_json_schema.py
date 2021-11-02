@@ -103,7 +103,7 @@ def simple_type(schema):
 
 
 def _get_ref(schema, paths):
-    logger.info("'%s' schema in _get_ref method. Paths is '%s'", schema)
+    logger.info("'%s' schema in _get_ref method", schema)
     logger.info("paths is '%s'", paths)
     if not paths:
         return schema
